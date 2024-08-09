@@ -4,10 +4,10 @@ const postController = require('../controllers/postController');
 const authMiddleware = require('../middleware/authMiddleware');
 const csrfMiddleware = require('../middleware/csrfMiddleware');
 
-router.post('/', csrfMiddleware, authMiddleware.ensureAuthenticated, postController.createPost);
-router.put('/:id', csrfMiddleware, authMiddleware.ensureAuthenticated, postController.updatePost);
-router.delete('/:id', csrfMiddleware, authMiddleware.ensureAuthenticated, postController.deletePost);
-router.get('/', csrfMiddleware, postController.getAllPosts);
-router.get('/search', csrfMiddleware, postController.searchPosts);
+router.post('/',  authMiddlewae.ensureAuthenticated, postController.createPost);
+router.put('/:id', authMiddleware.ensureAuthenticated, postController.updatePost);
+router.delete('/:id', authMiddleware.ensureAuthenticated, postController.deletePost);
+router.get('/',  postController.getAllPosts);
+router.get('/search',  postController.searchPosts);
 
 module.exports = router;

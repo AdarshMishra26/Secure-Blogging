@@ -25,7 +25,7 @@ app.use(session({
 }));
 
 // CSRF Protection
-app.use(csrf({ cookie: true }));
+// app.use(csrf({ cookie: true }));
 
 // Middleware to parse JSON and form data
 app.use(express.json());
