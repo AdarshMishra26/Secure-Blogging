@@ -92,6 +92,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function getCsrfToken() {
-    const csrfToken = document.cookie.split(';').find(cookie => cookie.trim().startsWith('_csrf='));
-    return csrfToken ? csrfToken.split('=')[1] : '';
+    const csrfToken = document.querySelector('input[name="_csrf"]').value;
+    if (csrfToken) {
+        return csrfToken;
+    } else {
+        console.error('CSRF token not found in the form');
+        return '';
+    }
 }
