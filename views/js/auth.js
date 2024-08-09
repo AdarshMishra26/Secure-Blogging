@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-Token': getCsrfToken()
+                    'X-CSRF-Token': getcookie("_csrf")
                 },
                 body: JSON.stringify({
                     username: formData.get('username'),
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-Token': getCsrfToken()
+                    'X-CSRF-Token': getcookie("_csrf")
                 },
                 body: JSON.stringify({
                     username: formData.get('username'),
@@ -92,6 +92,55 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function getCsrfToken() {
-    const csrfToken = document.cookie.split(';').find(cookie => cookie.trim().startsWith('_csrf='));
-    return csrfToken ? csrfToken.split('=')[1] : '';
+    const csrfToken = document.querySelector('input[name="_csrf"]').value;
+    if (csrfToken) {
+        return csrfToken;
+    } else {
+        console.error('CSRF token not found in the form');
+        return '';
+    }
 }
+
+const converter = {
+    read: function (value) {
+      if (value[0] === '"') {
+        value = value.slice(1, -1)
+      }
+      return value.replace(/(%[\dA-F]{2})+/gi, decodeURIComponent)
+    },
+    write: function (value) {
+      return encodeURIComponent(value).replace(
+        /%(2[346BF]|3[AC-F]|40|5[BDE]|60|7[BCD])/g,
+        decodeURIComponent
+      )
+    }
+  }
+
+function getcookie(name) {
+    if (typeof document === 'undefined' || (arguments.length && !name)) {
+      return
+    }
+
+    // To prevent the for loop in the first place assign an empty array
+    // in case there are no cookies at all.
+    var cookies = document.cookie ? document.cookie.split('; ') : []
+    var jar = {}
+    for (var i = 0; i < cookies.length; i++) {
+      var parts = cookies[i].split('=')
+      var value = parts.slice(1).join('=')
+
+      try {
+        var found = decodeURIComponent(parts[0])
+        if (!(found in jar)) jar[found] = converter.read(value, found)
+        if (name === found) {
+          break
+        }
+      } catch {
+        // Do nothing...
+      }
+    }
+    console.log(jar)
+    return name ? jar[name] : jar
+  }
+
+  

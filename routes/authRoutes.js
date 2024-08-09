@@ -3,8 +3,8 @@ const router = express.Router();
 const authController = require('../controllers/authController');
 const csrfMiddleware = require('../middleware/csrfMiddleware');
 
-router.post('/register', csrfMiddleware, authController.register);
-router.post('/login', csrfMiddleware, authController.login);
-router.post('/verify-otp', csrfMiddleware, authController.verifyOtp);
+router.post('/register',  authController.register);
+router.post('/login',  authController.login);
+router.post('/verify-otp', authController.verifyOtp);
 
 module.exports = router;
