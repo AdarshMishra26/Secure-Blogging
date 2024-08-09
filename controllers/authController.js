@@ -33,11 +33,12 @@ const AuthController = {
                 otp_enabled: false
             };
 
-            User.create(newUser, (err) => {
+            User.create(newUser, (err, result) => {
                 if (err) {
                     console.error('Error creating user:', err);
                     return res.status(500).json({ error: 'Internal server error' });
                 }
+                console.log('User registered:', result);
                 res.status(201).json({ message: 'User registered successfully' });
             });
         });
@@ -53,6 +54,7 @@ const AuthController = {
             }
 
             if (results.length === 0) {
+                console.error('Invalid username or password');
                 return res.status(400).json({ error: 'Invalid username or password' });
             }
 
@@ -65,6 +67,7 @@ const AuthController = {
                 }
 
                 if (!isMatch) {
+                    console.error('Invalid username or password');
                     return res.status(400).json({ error: 'Invalid username or password' });
                 }
                 if (user.otp_enabled) {
@@ -88,10 +91,10 @@ const AuthController = {
                         }
 
                         const token = jwt.sign({ id: user.id, otpVerified: false }, process.env.SESSION_SECRET, { expiresIn: '10m' });
+                        console.log('OTP sent, token generated:', token);
                         res.json({ message: 'OTP sent to your email', token });
                     });
                 } else {
-                    // If OTP is not enabled, handle login
                     req.login(user, (err) => {
                         if (err) {
                             console.error('Error during login:', err);
@@ -105,10 +108,11 @@ const AuthController = {
     },
 
     verifyOtp: (req, res) => {
-        const { otp } = req.body;
+        const { otp, username } = req.body;
         const token = req.headers.authorization?.split(' ')[1];
 
         if (!token) {
+            console.error('No token provided');
             return res.status(400).json({ error: 'No token provided' });
         }
 
@@ -118,28 +122,41 @@ const AuthController = {
                 return res.status(400).json({ error: 'Invalid token' });
             }
 
-            User.findById(decoded.id, (err, results) => {
+            User.findByUsername(username, (err, results) => {
                 if (err) {
-                    console.error('Error finding user by ID:', err);
+                    console.error('Error finding user by username:', err);
                     return res.status(500).json({ error: 'Internal server error' });
                 }
 
                 if (results.length === 0) {
+                    console.error('User not found');
                     return res.status(400).json({ error: 'User not found' });
                 }
 
                 const user = results[0];
 
+                if (!user.otp_enabled) {
+                    console.error('OTP not enabled for user');
+                    return res.status(400).json({ error: 'OTP not enabled for user' });
+                }
+
+                console.log('User secret:', user.secret); // Debugging statement
+                console.log('Entered OTP:', otp); // Debugging statement
+
                 const verified = speakeasy.totp.verify({
                     secret: user.secret,
                     encoding: 'base32',
-                    token: otp
+                    token: otp,
+                    window: 1 // Allow a small time window for verification
                 });
+
+                console.log('OTP verification result:', verified); // Debugging statement
 
                 if (verified) {
                     const newToken = jwt.sign({ id: user.id, otpVerified: true }, process.env.SESSION_SECRET, { expiresIn: '1h' });
                     res.json({ message: 'OTP verified', token: newToken });
                 } else {
+                    console.error('Invalid OTP');
                     res.status(400).json({ error: 'Invalid OTP' });
                 }
             });
