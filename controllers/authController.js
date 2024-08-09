@@ -51,8 +51,8 @@ const AuthController = {
                 if (err || !isMatch) {
                     return res.status(400).json({ error: 'Invalid username or password' });
                 }
-
                 if (user.otp_enabled) {
+                    console.log('User ${user.username}')
                     const otp = speakeasy.totp({
                         secret: user.secret,
                         encoding: 'base32'
