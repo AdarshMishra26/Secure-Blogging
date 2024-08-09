@@ -1,4 +1,5 @@
 const Post = require('../models/postModel');
+const jwt = require('jsonwebtoken');
 
 const PostController = {
     createPost: (req, res) => {

@@ -18,7 +18,10 @@ const AuthController = {
         const { username, email, password } = req.body;
 
         bcrypt.hash(password, 10, (err, hash) => {
-            if (err) throw err;
+            if (err) {
+                console.error('Error hashing password:', err);
+                return res.status(500).json({ error: 'Internal server error' });
+            }
 
             const secret = speakeasy.generateSecret({ length: 20 }).base32;
 
@@ -31,7 +34,10 @@ const AuthController = {
             };
 
             User.create(newUser, (err) => {
-                if (err) return res.status(500).json({ error: err.message });
+                if (err) {
+                    console.error('Error creating user:', err);
+                    return res.status(500).json({ error: 'Internal server error' });
+                }
                 res.status(201).json({ message: 'User registered successfully' });
             });
         });
@@ -41,14 +47,24 @@ const AuthController = {
         const { username, password } = req.body;
 
         User.findByUsername(username, (err, results) => {
-            if (err || results.length === 0) {
+            if (err) {
+                console.error('Error finding user by username:', err);
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+
+            if (results.length === 0) {
                 return res.status(400).json({ error: 'Invalid username or password' });
             }
 
             const user = results[0];
 
             bcrypt.compare(password, user.password, (err, isMatch) => {
-                if (err || !isMatch) {
+                if (err) {
+                    console.error('Error comparing passwords:', err);
+                    return res.status(500).json({ error: 'Internal server error' });
+                }
+
+                if (!isMatch) {
                     return res.status(400).json({ error: 'Invalid username or password' });
                 }
                 if (user.otp_enabled) {
@@ -66,14 +82,21 @@ const AuthController = {
                     };
 
                     transporter.sendMail(mailOptions, (err) => {
-                        if (err) return res.status(500).json({ error: err.message });
+                        if (err) {
+                            console.error('Error sending OTP email:', err);
+                            return res.status(500).json({ error: 'Failed to send OTP' });
+                        }
 
                         const token = jwt.sign({ id: user.id, otpVerified: false }, process.env.SESSION_SECRET, { expiresIn: '10m' });
                         res.json({ message: 'OTP sent to your email', token });
                     });
                 } else {
+                    // If OTP is not enabled, handle login
                     req.login(user, (err) => {
-                        if (err) return res.status(500).json({ error: err.message });
+                        if (err) {
+                            console.error('Error during login:', err);
+                            return res.status(500).json({ error: 'Internal server error' });
+                        }
                         res.json({ message: 'Logged in successfully' });
                     });
                 }
@@ -83,13 +106,25 @@ const AuthController = {
 
     verifyOtp: (req, res) => {
         const { otp } = req.body;
-        const token = req.headers.authorization.split(' ')[1];
+        const token = req.headers.authorization?.split(' ')[1];
+
+        if (!token) {
+            return res.status(400).json({ error: 'No token provided' });
+        }
 
         jwt.verify(token, process.env.SESSION_SECRET, (err, decoded) => {
-            if (err) return res.status(400).json({ error: 'Invalid token' });
+            if (err) {
+                console.error('Error verifying JWT token:', err);
+                return res.status(400).json({ error: 'Invalid token' });
+            }
 
             User.findById(decoded.id, (err, results) => {
-                if (err || results.length === 0) {
+                if (err) {
+                    console.error('Error finding user by ID:', err);
+                    return res.status(500).json({ error: 'Internal server error' });
+                }
+
+                if (results.length === 0) {
                     return res.status(400).json({ error: 'User not found' });
                 }
 
@@ -102,8 +137,8 @@ const AuthController = {
                 });
 
                 if (verified) {
-                    const token = jwt.sign({ id: user.id, otpVerified: true }, process.env.SESSION_SECRET, { expiresIn: '1h' });
-                    res.json({ message: 'OTP verified', token });
+                    const newToken = jwt.sign({ id: user.id, otpVerified: true }, process.env.SESSION_SECRET, { expiresIn: '1h' });
+                    res.json({ message: 'OTP verified', token: newToken });
                 } else {
                     res.status(400).json({ error: 'Invalid OTP' });
                 }
