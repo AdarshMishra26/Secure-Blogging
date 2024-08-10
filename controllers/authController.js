@@ -90,7 +90,7 @@ const AuthController = {
                             return res.status(500).json({ error: 'Failed to send OTP' });
                         }
 
-                        const token = jwt.sign({ id: user.id, otpVerified: false }, process.env.SESSION_SECRET, { expiresIn: '10m' });
+                        const token = jwt.sign({ id: user.username, otpVerified: false }, process.env.SESSION_SECRET, { expiresIn: '100m' });
                         console.log('OTP sent, token generated:', token);
                         res.json({ message: 'OTP sent to your email', token });
                     });
@@ -153,7 +153,7 @@ const AuthController = {
                 console.log('OTP verification result:', verified); // Debugging statement
 
                 if (verified) {
-                    const newToken = jwt.sign({ id: user.id, otpVerified: true }, process.env.SESSION_SECRET, { expiresIn: '1h' });
+                    const newToken = jwt.sign({ id: user.username, otpVerified: true }, process.env.SESSION_SECRET, { expiresIn: '1h' });
                     res.json({ message: 'OTP verified', token: newToken });
                 } else {
                     console.error('Invalid OTP');

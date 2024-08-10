@@ -8,7 +8,8 @@ module.exports = {
         const token = authHeader.split(' ')[1];
         if (!token) return res.status(401).json({ error: 'Token format is invalid' });
 
-        jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        jwt.verify(token, process.env.SESSION_SECRET, (err, decoded) => {
+            console.log(decoded, err)
             if (err || !decoded.otpVerified) {
                 return res.status(401).json({ error: 'Unauthorized access' });
             }
