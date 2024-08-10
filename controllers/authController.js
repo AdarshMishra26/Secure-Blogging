@@ -153,7 +153,7 @@ const AuthController = {
                 console.log('OTP verification result:', verified); // Debugging statement
 
                 if (verified) {
-                    const newToken = jwt.sign({ id: user.username, otpVerified: true }, process.env.SESSION_SECRET, { expiresIn: '1h' });
+                    const newToken = jwt.sign({ id: user.username, otpVerified: true }, process.env.SESSION_SECRET, { expiresIn: '10h' });
                     res.json({ message: 'OTP verified', token: newToken });
                 } else {
                     console.error('Invalid OTP');
