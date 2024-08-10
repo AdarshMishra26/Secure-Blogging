@@ -4,35 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Movie Blog</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+        header {
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0;
+        }
+        nav .navbar-brand, nav .nav-link {
+            color: white !important;
+        }
+        nav .navbar-brand:hover, nav .nav-link:hover {
+            color: #ffc107 !important;
+        }
+        main {
+            flex: 1;
+            padding: 20px 0;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>Dashboard</h1>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="dashboard.html">Dashboard</a>
-        </nav>
+        <div class="container">
+            <h1>Dashboard</h1>
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <a class="navbar-brand" href="index.html">Home</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="dashboard.html">Dashboard</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
     </header>
 
-    <main>
-        <h2>Your Posts</h2>
-        <div id="user-posts-container"></div>
+    <main class="container" style="text-align: center;">
+        <h2 class="mb-4">Your Posts</h2>
+        <div id="user-posts-container" class="mb-5"></div>
 
-        <h3>Create a New Post</h3>
+        <h3 class="mb-4">Create a New Post</h3>
         <form id="create-post-form">
-            <label for="title">Title</label>
-            <input type="text" id="title" name="title" required>
-
-            <label for="content">Content</label>
-            <textarea id="content" name="content" required></textarea>
-
-            <button type="submit">Create Post</button>
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="content">Content</label>
+                <textarea class="form-control" id="content" name="content" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Post</button>
         </form>
 
-        <p id="message"></p>
+        <p id="message" class="mt-3"></p>
     </main>
 
+    <footer>
+        <div class="container">
+          <p class="mb-0">
+            &copy; <span id="year"></span> Movie Blog. All rights reserved.
+          </p>
+        </div>
+      </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="js/posts.js"></script>
 </body>
 </html>

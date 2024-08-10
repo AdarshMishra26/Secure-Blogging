@@ -108,7 +108,7 @@ const AuthController = {
     },
 
     verifyOtp: (req, res) => {
-        const { otp, username } = req.body;
+        const { otp} = req.body;
         const token = req.headers.authorization?.split(' ')[1];
 
         if (!token) {

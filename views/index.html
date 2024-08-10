@@ -1,27 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie Blog</title>
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <style>
+      body {
+        background-color: #f8f9fa;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        margin: 0;
+      }
+      header {
+        background: linear-gradient(to right, #ff7e5f, #feb47b);
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+      }
+      header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0;
+      }
+      nav .navbar-brand,
+      nav .nav-link {
+        color: white !important;
+      }
+      nav .navbar-brand:hover,
+      nav .nav-link:hover {
+        color: #ffc107 !important;
+      }
+      main {
+        flex: 1;
+        padding: 20px 0;
+      }
+      footer {
+        background-color: #343a40;
+        color: white;
+        padding: 10px 0;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
     <header>
+      <div class="container">
         <h1>Welcome to Movie Blog</h1>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="register.html">Register</a>
-            <a href="login.html">Login</a>
-            <a href="dashboard.html">Dashboard</a>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+          <a class="navbar-brand" href="index.html">Home</a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="register.html">Register</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="login.html">Login</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="dashboard.html">Dashboard</a>
+              </li>
+            </ul>
+          </div>
         </nav>
+      </div>
     </header>
 
-    <main>
-        <h2>Recent Posts</h2>
-        <div id="posts-container"></div>
+    <main class="container">
+      <h2 class="mb-4" style="text-align: center">Recent Posts</h2>
+      <div id="posts-container"></div>
     </main>
 
+    <footer>
+        <div class="container">
+          <p class="mb-0">
+            &copy; <span id="year"></span> Movie Blog. All rights reserved.
+          </p>
+        </div>
+      </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
-</body>
+  </body>
 </html>

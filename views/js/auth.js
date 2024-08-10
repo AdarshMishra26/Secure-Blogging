@@ -143,4 +143,6 @@ function getcookie(name) {
     return name ? jar[name] : jar
   }
 
-  
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('year').innerHTML = new Date().getFullYear();
+  });
